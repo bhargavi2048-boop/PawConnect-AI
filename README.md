@@ -4,8 +4,7 @@
 > **1M1B Initiative Project** · Built for SDG Impact · Developed by **Bhargavi N**
 
 ---
-
-                                  Demo Link: "https://pawconnect-ai-powered-dpe8.onrender.com"
+Demo Link: "https://pawconnect-ai-powered-dpe8.onrender.com"
 Demo Video: "https://drive.google.com/file/d/1jHkGoyvMdtRHzHcKI7Wh1_0tJEvuDT5W/view?usp=sharing"
 
 ## 📌 Table of Contents
