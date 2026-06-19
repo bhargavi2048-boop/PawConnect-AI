@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – PawConnect AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+{% endblock %}
+
+{% block content %}
+<div class="page-header-banner banner-dark">
+  <div class="container">
+    <h1 class="page-banner-title">📊 Admin Dashboard</h1>
+    <p class="page-banner-sub">Monitor complaints, track case progress, and measure platform impact.</p>
+  </div>
+</div>
+
+<div class="container py-4">
+
+  <!-- STAT CARDS -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="admin-stat-card">
+        <div class="asc-icon" style="background:#fff3e0;color:#f57c00;">
+          <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="asc-number text-dark">{{ stats.total_complaints }}</div>
+        <div class="asc-label">Total Cases</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="admin-stat-card">
+        <div class="asc-icon" style="background:#fce4ec;color:#c62828;">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="asc-number text-dark">{{ stats.pending }}</div>
+        <div class="asc-label">Pending</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="admin-stat-card">
+        <div class="asc-icon" style="background:#e3f2fd;color:#1565c0;">
+          <i class="fas fa-spinner"></i>
+        </div>
+        <div class="asc-number text-dark">{{ stats.in_progress }}</div>
+        <div class="asc-label">In Progress</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="admin-stat-card">
+        <div class="asc-icon" style="background:#e8f5e9;color:#2e7d32;">
+          <i class="fas fa-paw"></i>
+        </div>
+        <div class="asc-number text-dark">{{ stats.rescued }}</div>
+        <div class="asc-label">Animals Rescued</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="admin-stat-card">
+        <div class="asc-icon" style="background:#f3e5f5;color:#6a1b9a;">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="asc-number text-dark">{{ stats.closed }}</div>
+        <div class="asc-label">Closed</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="admin-stat-card">
+        <div class="asc-icon" style="background:#e0f2f1;color:#00695c;">
+          <i class="fas fa-hands-helping"></i>
+        </div>
+        <div class="asc-number text-dark">{{ stats.total_volunteers }}</div>
+        <div class="asc-label">Active Volunteers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW: 3 charts -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="chart-card">
+        <h6 class="chart-title">📊 Complaints by Category</h6>
+        <canvas id="typeChart" height="240"></canvas>
+        <div id="typeChartEmpty" class="text-muted text-center mt-3 small" style="display:none;">No data yet — submit complaints to see analytics.</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-card">
+        <h6 class="chart-title">✅ Resolved vs Pending</h6>
+        <canvas id="statusChart" height="240"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="chart-card">
+        <h6 class="chart-title">📈 Monthly Complaint Trend</h6>
+        <canvas id="monthChart" height="240"></canvas>
+        <div id="monthChartEmpty" class="text-muted text-center mt-3 small" style="display:none;">No data yet — submit complaints to see trends.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="chart-card mb-4">
+    <h6 class="chart-title">🗺️ Complaint Locations Map</h6>
+    <div id="complaintMap" style="height:380px;border-radius:12px;"></div>
+    <p class="text-muted small mt-2"><i class="fas fa-info-circle me-1"></i>Markers show complaints with location data. Submit a report with coordinates to appear here.</p>
+  </div>
+
+  <!-- STATUS PROGRESS -->
+  {% if stats.total_complaints > 0 %}
+  <div class="admin-progress-card mb-4">
+    <h6 class="mb-3 text-dark">🎯 Case Resolution Overview</h6>
+    {% set total = stats.total_complaints %}
+    <div class="d-flex align-items-center mb-2">
+      <span class="progress-label">Submitted</span>
+      <div class="progress flex-grow-1 mx-3" style="height:10px;">
+        <div class="progress-bar bg-danger" style="width:{{ (stats.pending / total * 100)|int }}%"></div>
+      </div>
+      <span class="progress-num">{{ stats.pending }}</span>
+    </div>
+    <div class="d-flex align-items-center mb-2">
+      <span class="progress-label">In Progress</span>
+      <div class="progress flex-grow-1 mx-3" style="height:10px;">
+        <div class="progress-bar bg-primary" style="width:{{ (stats.in_progress / total * 100)|int }}%"></div>
+      </div>
+      <span class="progress-num">{{ stats.in_progress }}</span>
+    </div>
+    <div class="d-flex align-items-center mb-2">
+      <span class="progress-label">Rescued</span>
+      <div class="progress flex-grow-1 mx-3" style="height:10px;">
+        <div class="progress-bar bg-success" style="width:{{ (stats.rescued / total * 100)|int }}%"></div>
+      </div>
+      <span class="progress-num">{{ stats.rescued }}</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <span class="progress-label">Closed</span>
+      <div class="progress flex-grow-1 mx-3" style="height:10px;">
+        <div class="progress-bar bg-secondary" style="width:{{ (stats.closed / total * 100)|int }}%"></div>
+      </div>
+      <span class="progress-num">{{ stats.closed }}</span>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- TABS -->
+  <ul class="nav nav-tabs-custom mb-4" id="adminTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-tab-btn active" data-bs-toggle="tab" data-bs-target="#complaints-tab" type="button">
+        🚨 Complaints ({{ complaints|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-tab-btn" data-bs-toggle="tab" data-bs-target="#volunteers-tab" type="button">
+        🤝 Volunteers ({{ volunteers|length }})
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="complaints-tab">
+      <div class="table-card">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <h5 class="table-card-title mb-0">🚨 All Complaints</h5>
+          <input type="text" id="searchComplaints" class="form-control admin-search" placeholder="🔍 Search by name, location, ID..." oninput="filterTable('complaintsTable', this.value)"/>
+        </div>
+        {% if complaints %}
+        <div class="table-responsive">
+          <table class="table custom-table" id="complaintsTable">
+            <thead>
+              <tr>
+                <th>Complaint ID</th>
+                <th>Reporter</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Photo</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in complaints|reverse %}
+              <tr>
+                <td>
+                  <code class="complaint-id">{{ c.get('complaint_no', c.id) }}</code><br>
+                  <small class="text-muted">{{ c.id[:6] }}</small>
+                </td>
+                <td>
+                  <strong class="text-dark">{{ c.name }}</strong><br>
+                  <small class="text-muted">{{ c.mobile[:4] }}******</small>
+                </td>
+                <td>
+                  {% if c.complaint_type == 'Injured Dog' %}<span class="type-badge type-injured">🩹 Injured</span>
+                  {% elif c.complaint_type == 'Hungry Dog' %}<span class="type-badge type-hungry">🍖 Hungry</span>
+                  {% elif c.complaint_type == 'Sick Dog' %}<span class="type-badge type-sick">🏥 Sick</span>
+                  {% else %}<span class="type-badge type-missing">🔍 {{ c.complaint_type }}</span>{% endif %}
+                </td>
+                <td class="text-dark"><i class="fas fa-map-marker-alt text-danger me-1"></i>{{ c.location }}</td>
+                <td><small class="text-secondary">{{ c.description[:60] }}{% if c.description|length > 60 %}...{% endif %}</small></td>
+                <td>
+                  {% if c.photo %}
+                    <a href="/static/uploads/{{ c.photo }}" target="_blank">
+                      <img src="/static/uploads/{{ c.photo }}" class="complaint-thumb" alt="photo"/>
+                    </a>
+                  {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td>
+                  {% if c.status == 'Submitted' %}<span class="status-badge status-submitted">📩 Submitted</span>
+                  {% elif c.status == 'In Progress' %}<span class="status-badge status-inprogress">🔵 In Progress</span>
+                  {% elif c.status == 'Rescued' %}<span class="status-badge status-rescued">🐾 Rescued</span>
+                  {% elif c.status == 'Closed' %}<span class="status-badge status-closed">✅ Closed</span>
+                  {% else %}<span class="status-badge status-submitted">📩 {{ c.status }}</span>{% endif %}
+                </td>
+                <td><small class="text-muted">{{ c.timestamp[:10] }}</small></td>
+                <td>
+                  <form method="POST" action="/admin/update_status" class="d-flex gap-1">
+                    <input type="hidden" name="complaint_id" value="{{ c.id }}"/>
+                    <select name="status" class="form-select form-select-sm" style="min-width:120px;">
+                      <option {% if c.status=='Submitted' %}selected{% endif %}>Submitted</option>
+                      <option {% if c.status=='In Progress' %}selected{% endif %}>In Progress</option>
+                      <option {% if c.status=='Rescued' %}selected{% endif %}>Rescued</option>
+                      <option {% if c.status=='Closed' %}selected{% endif %}>Closed</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-update">✓</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p class="text-dark">No complaints submitted yet.</p>
+          <a href="/report" class="btn btn-sm btn-warning">Submit First Report</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="volunteers-tab">
+      <div class="table-card">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <h5 class="table-card-title mb-0">🤝 All Volunteers</h5>
+          <input type="text" class="form-control admin-search" placeholder="🔍 Search volunteers..." oninput="filterTable('volunteersTable', this.value)"/>
+        </div>
+        {% if volunteers %}
+        <div class="table-responsive">
+          <table class="table custom-table" id="volunteersTable">
+            <thead>
+              <tr><th>#</th><th>Name</th><th>Mobile</th><th>Location</th><th>Role</th><th>Joined</th></tr>
+            </thead>
+            <tbody>
+              {% for v in volunteers|reverse %}
+              <tr>
+                <td class="text-dark">{{ loop.index }}</td>
+                <td><strong class="text-dark">{{ v.name }}</strong></td>
+                <td class="text-muted">{{ v.mobile[:4] }}******</td>
+                <td class="text-dark"><i class="fas fa-map-marker-alt text-danger me-1"></i>{{ v.location }}</td>
+                <td>
+                  {% if v.help_type == 'Food Provider' %}<span class="badge-role badge-food">🍽️ {{ v.help_type }}</span>
+                  {% elif v.help_type == 'Rescue Volunteer' %}<span class="badge-role badge-rescue">🚑 {{ v.help_type }}</span>
+                  {% else %}<span class="badge-role badge-medical">💉 {{ v.help_type }}</span>{% endif %}
+                </td>
+                <td><small class="text-muted">{{ v.timestamp[:10] }}</small></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🤝</div>
+          <p class="text-dark">No volunteers registered yet.</p>
+          <a href="/volunteer" class="btn btn-sm btn-success">Be First Volunteer</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+function filterTable(tableId, query) {
+  const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+  query = query.toLowerCase();
+  rows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(query) ? '' : 'none';
+  });
+}
+
+const typeData = {{ type_counts|safe }};
+const monthData = {{ monthly_counts|safe }};
+const statsData = {
+  pending: {{ stats.pending }},
+  in_progress: {{ stats.in_progress }},
+  rescued: {{ stats.rescued }},
+  closed: {{ stats.closed }}
+};
+
+// Chart 1: Complaints by Category (Doughnut)
+if (Object.keys(typeData).length > 0) {
+  new Chart(document.getElementById('typeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(typeData),
+      datasets: [{
+        data: Object.values(typeData),
+        backgroundColor: ['#ff7043','#42a5f5','#66bb6a','#ab47bc','#26c6da'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#333', font: { size: 12 } } }
+      }
+    }
+  });
+} else {
+  document.getElementById('typeChart').style.display = 'none';
+  document.getElementById('typeChartEmpty').style.display = 'block';
+}
+
+// Chart 2: Resolved vs Pending (Pie)
+const resolvedCount = statsData.rescued + statsData.closed;
+const pendingCount = statsData.pending + statsData.in_progress;
+new Chart(document.getElementById('statusChart'), {
+  type: 'pie',
+  data: {
+    labels: ['Pending', 'In Progress', 'Rescued', 'Closed'],
+    datasets: [{
+      data: [statsData.pending, statsData.in_progress, statsData.rescued, statsData.closed],
+      backgroundColor: ['#ef5350', '#42a5f5', '#66bb6a', '#78909c'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { color: '#333', font: { size: 12 } } },
+      title: {
+        display: true,
+        text: resolvedCount > 0 ? `${resolvedCount} Resolved of ${resolvedCount + pendingCount} Total` : 'No cases yet',
+        color: '#555',
+        font: { size: 12 }
+      }
+    }
+  }
+});
+
+// Chart 3: Monthly Trend (Bar)
+if (Object.keys(monthData).length > 0) {
+  new Chart(document.getElementById('monthChart'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(monthData),
+      datasets: [{
+        label: 'Complaints',
+        data: Object.values(monthData),
+        backgroundColor: '#4caf9050',
+        borderColor: '#4caf90',
+        borderWidth: 2,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#555' } },
+        x: { ticks: { color: '#555' } }
+      }
+    }
+  });
+} else {
+  document.getElementById('monthChart').style.display = 'none';
+  document.getElementById('monthChartEmpty').style.display = 'block';
+}
+
+// Leaflet Map
+const map = L.map('complaintMap').setView([20.5937, 78.9629], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+const mapComplaints = {{ map_complaints|safe }};
+if (mapComplaints.length > 0) {
+  mapComplaints.forEach(c => {
+    const lat = parseFloat(c.lat), lng = parseFloat(c.lng);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      const colorMap = {'Injured Dog':'#e53935','Hungry Dog':'#fb8c00','Sick Dog':'#8e24aa','Missing Dog':'#1e88e5'};
+      const color = colorMap[c.complaint_type] || '#43a047';
+      const icon = L.divIcon({ className:'', html:`<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`, iconSize:[14,14] });
+      L.marker([lat, lng], { icon }).addTo(map)
+        .bindPopup(`<strong>${c.complaint_no || c.id}</strong><br>${c.complaint_type}<br><i>${c.location}</i><br><span class="badge bg-warning text-dark">${c.status}</span>`);
+    }
+  });
+} else {
+  const demos = [
+    {lat:13.0827, lng:80.2707, label:'Chennai – Injured Dog', type:'Injured Dog'},
+    {lat:12.9716, lng:77.5946, label:'Bengaluru – Hungry Dog', type:'Hungry Dog'},
+    {lat:19.0760, lng:72.8777, label:'Mumbai – Sick Dog', type:'Sick Dog'},
+    {lat:28.6139, lng:77.2090, label:'Delhi – Missing Dog', type:'Missing Dog'},
+    {lat:17.3850, lng:78.4867, label:'Hyderabad – Injured Dog', type:'Injured Dog'},
+  ];
+  demos.forEach(d => {
+    const colorMap = {'Injured Dog':'#e53935','Hungry Dog':'#fb8c00','Sick Dog':'#8e24aa','Missing Dog':'#1e88e5'};
+    const icon = L.divIcon({ className:'', html:`<div style="background:${colorMap[d.type]};width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`, iconSize:[14,14] });
+    L.marker([d.lat, d.lng], { icon }).addTo(map).bindPopup(`<strong>${d.label}</strong><br><em>Demo location</em>`);
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}PawConnect AI – Stray Dog Help & Feeding Network{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  <div class="container position-relative">
+    <div class="row align-items-center min-vh-85">
+      <div class="col-lg-6">
+        <div class="hero-eyebrow">🌍 SDG-Aligned Animal Welfare Platform</div>
+        <h1 class="hero-title">Every Stray Dog<br>Deserves <span class="text-highlight">Care</span> &<br><span class="text-highlight">Compassion</span></h1>
+        <p class="hero-subtitle">PawConnect AI connects citizens, NGOs, and volunteers to report, rescue, and care for stray dogs — building more humane, sustainable cities one paw at a time.</p>
+        <div class="hero-buttons d-flex flex-wrap gap-3 mt-4">
+          <a href="/report" class="btn btn-hero-primary">
+            <i class="fas fa-exclamation-circle me-2"></i>Report a Dog
+          </a>
+          <a href="/volunteer" class="btn btn-hero-secondary">
+            <i class="fas fa-hands-helping me-2"></i>Become Volunteer
+          </a>
+          <a href="/chatbot" class="btn btn-hero-chat">
+            <i class="fas fa-robot me-2"></i>Chat with PawBot
+          </a>
+        </div>
+        <div class="hero-stats d-flex flex-wrap gap-4 mt-5">
+          <div class="hero-stat">
+            <span class="stat-number">{{ stats.total_complaints }}</span>
+            <span class="stat-label">Cases Reported</span>
+          </div>
+          <div class="hero-stat">
+            <span class="stat-number">{{ stats.total_volunteers }}</span>
+            <span class="stat-label">Volunteers</span>
+          </div>
+          <div class="hero-stat">
+            <span class="stat-number">{{ stats.resolved }}</span>
+            <span class="stat-label">Cases Resolved</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center mt-5 mt-lg-0">
+        <div class="hero-illustration">
+          <div class="hero-circle">
+            <span class="hero-dog-emoji">🐕</span>
+          </div>
+          <div class="float-badge badge-1">🚨 SOS Report</div>
+          <div class="float-badge badge-2">🤝 Volunteer Match</div>
+          <div class="float-badge badge-3">✅ Case Resolved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="stats-strip">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <div class="stat-card stat-orange">
+          <div class="stat-icon">📋</div>
+          <div class="stat-val">{{ stats.total_complaints }}</div>
+          <div class="stat-lbl">Total Reports</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card stat-green">
+          <div class="stat-icon">🤝</div>
+          <div class="stat-val">{{ stats.total_volunteers }}</div>
+          <div class="stat-lbl">Volunteers</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card stat-yellow">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-val">{{ stats.pending }}</div>
+          <div class="stat-lbl">Pending Cases</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon">✅</div>
+          <div class="stat-val">{{ stats.resolved }}</div>
+          <div class="stat-lbl">Resolved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section-how py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <span class="section-eyebrow">Platform Workflow</span>
+      <h2 class="section-title">How PawConnect AI Works</h2>
+      <p class="section-desc">From spotting a stray to getting them help — our platform makes it simple.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="how-card">
+          <div class="how-step">01</div>
+          <div class="how-icon">📸</div>
+          <h5>Citizen Reports</h5>
+          <p>Spot an injured, hungry, or sick stray? Report it in 60 seconds with a photo and location.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-card">
+          <div class="how-step">02</div>
+          <div class="how-icon">🤖</div>
+          <h5>AI Categorizes</h5>
+          <p>PawBot analyzes the report type and routes it to the right volunteers or NGO partners.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-card">
+          <div class="how-step">03</div>
+          <div class="how-icon">🚑</div>
+          <h5>Help Arrives</h5>
+          <p>Volunteers and NGOs respond, provide food/rescue/medical care, and close the case.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section-features py-5 bg-alt">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <span class="section-eyebrow">What We Offer</span>
+      <h2 class="section-title">Platform Features</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon">🚨</div>
+          <h5>Instant Reporting</h5>
+          <p>Report injured, sick, hungry, or missing stray dogs with photo upload in under a minute.</p>
+          <a href="/report" class="feature-link">Report Now →</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h5>AI Chatbot</h5>
+          <p>PawBot provides instant guidance on feeding, first aid, and connecting with animal welfare orgs.</p>
+          <a href="/chatbot" class="feature-link">Chat Now →</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <h5>Volunteer Network</h5>
+          <p>Join as a food provider, rescue volunteer, or medical assistant and make a real difference.</p>
+          <a href="/volunteer" class="feature-link">Join →</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h5>Admin Dashboard</h5>
+          <p>Track complaints, update statuses, manage volunteers, and monitor impact in real-time.</p>
+          <a href="/admin" class="feature-link">Dashboard →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SDG SECTION -->
+<section class="section-sdg py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <span class="section-eyebrow">United Nations Goals</span>
+      <h2 class="section-title">Our SDG Commitment</h2>
+      <p class="section-desc">PawConnect AI directly advances three UN Sustainable Development Goals.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="sdg-card sdg-card-15">
+          <div class="sdg-number">15</div>
+          <div class="sdg-icon-big">🌿</div>
+          <h5>Life on Land</h5>
+          <p>Protecting stray dogs preserves biodiversity and promotes humane treatment of all land animals within urban ecosystems.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="sdg-card sdg-card-11">
+          <div class="sdg-number">11</div>
+          <div class="sdg-icon-big">🏙️</div>
+          <h5>Sustainable Cities</h5>
+          <p>Building compassionate urban communities where both humans and animals can coexist safely and sustainably.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="sdg-card sdg-card-17">
+          <div class="sdg-number">17</div>
+          <div class="sdg-icon-big">🤝</div>
+          <h5>Partnerships</h5>
+          <p>Uniting citizens, NGOs, animal welfare organizations, and government bodies toward shared animal welfare goals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="section-cta py-5">
+  <div class="container">
+    <div class="cta-box text-center">
+      <div class="cta-paw">🐾</div>
+      <h2>Ready to Make a Difference?</h2>
+      <p>Join thousands of citizens and volunteers building a kinder world for stray dogs.</p>
+      <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+        <a href="/report" class="btn btn-cta-primary">🚨 Report a Dog</a>
+        <a href="/volunteer" class="btn btn-cta-secondary">🤝 Volunteer Today</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

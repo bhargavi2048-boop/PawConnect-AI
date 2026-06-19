@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Report a Dog – PawConnect AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+{% endblock %}
+
+{% block content %}
+<div class="page-header-banner banner-orange">
+  <div class="container">
+    <h1 class="page-banner-title">🚨 Report a Dog in Need</h1>
+    <p class="page-banner-sub">Spotted a stray dog that needs help? Report it instantly — our volunteers will respond within 2 hours.</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-lg-7">
+      <div class="form-card">
+        <h4 class="fw-800 mb-4">Submit Complaint</h4>
+        <form method="POST" action="/report" enctype="multipart/form-data">
+          <input type="hidden" name="lat" id="lat"/>
+          <input type="hidden" name="lng" id="lng"/>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="form-label fw-600">Your Name *</label>
+              <input type="text" name="name" class="form-control form-control-lg" placeholder="e.g. Arjun Sharma" required/>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-600">Mobile Number *</label>
+              <input type="tel" name="mobile" class="form-control form-control-lg" placeholder="e.g. 9876543210" required/>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600">Location / Address *</label>
+              <div class="d-flex gap-2">
+                <input type="text" name="location" id="locationInput" class="form-control form-control-lg" placeholder="e.g. Near Anna Nagar Metro, Chennai" required/>
+                <button type="button" class="btn btn-outline-primary btn-lg" onclick="getLocation()" title="Use my location">
+                  <i class="fas fa-location-arrow"></i>
+                </button>
+              </div>
+              <div id="locationStatus" class="small text-muted mt-1"></div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600">Complaint Type *</label>
+              <select name="complaint_type" class="form-select form-select-lg" required>
+                <option value="">— Select Type —</option>
+                <option>Injured Dog</option>
+                <option>Hungry Dog</option>
+                <option>Sick Dog</option>
+                <option>Missing Dog</option>
+                <option>Aggressive Dog</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600">Description</label>
+              <textarea name="description" class="form-control" rows="4" placeholder="Describe what you observed — color, condition, exact spot, any immediate danger..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600">Photo (optional)</label>
+              <input type="file" name="photo" class="form-control" accept="image/*"/>
+              <div class="form-text">Upload a photo to help volunteers identify the animal quickly.</div>
+            </div>
+            <div class="col-12 mt-2">
+              <button type="submit" class="btn btn-hero-primary w-100 btn-lg">
+                <i class="fas fa-paper-plane me-2"></i>Submit Report
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <!-- MAP PREVIEW -->
+      <div class="form-card mb-4">
+        <h6 class="fw-700 mb-3">📍 Pin Location on Map</h6>
+        <div id="reportMap" style="height:280px;border-radius:12px;"></div>
+        <p class="small text-muted mt-2">Click on the map or use <strong>Use My Location</strong> to pin the exact spot.</p>
+      </div>
+
+      <!-- WHAT HAPPENS NEXT -->
+      <div class="form-card">
+        <h6 class="fw-700 mb-3">✅ What Happens After You Report</h6>
+        <div class="next-steps">
+          <div class="next-step">
+            <div class="next-step-num">1</div>
+            <div>Your report gets a unique <strong>Complaint ID (PC001)</strong></div>
+          </div>
+          <div class="next-step">
+            <div class="next-step-num">2</div>
+            <div>Nearest volunteer is <strong>notified automatically</strong></div>
+          </div>
+          <div class="next-step">
+            <div class="next-step-num">3</div>
+            <div>Case status updates to <strong>In Progress</strong></div>
+          </div>
+          <div class="next-step">
+            <div class="next-step-num">4</div>
+            <div>Animal gets help — status updated to <strong>Rescued</strong></div>
+          </div>
+          <div class="next-step">
+            <div class="next-step-num">5</div>
+            <div>Track progress anytime at <a href="/track">Track Complaint</a></div>
+          </div>
+        </div>
+        <div class="mt-3 p-3 rounded-3" style="background:#fff8e1;border-left:4px solid #ffc107;">
+          <strong>📞 Emergency?</strong> Call Animal Helpline: <strong>1962</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('reportMap').setView([13.0827, 80.2707], 11);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+let marker = null;
+function placeMarker(lat, lng) {
+  if (marker) map.removeLayer(marker);
+  marker = L.marker([lat, lng]).addTo(map);
+  document.getElementById('lat').value = lat;
+  document.getElementById('lng').value = lng;
+  map.setView([lat, lng], 15);
+}
+
+map.on('click', function(e) {
+  placeMarker(e.latlng.lat, e.latlng.lng);
+  document.getElementById('locationStatus').textContent = `📍 Pinned: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+});
+
+function getLocation() {
+  if (!navigator.geolocation) return;
+  document.getElementById('locationStatus').textContent = '📡 Getting your location...';
+  navigator.geolocation.getCurrentPosition(pos => {
+    const {latitude: lat, longitude: lng} = pos.coords;
+    placeMarker(lat, lng);
+    document.getElementById('locationStatus').textContent = `✅ Location captured: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.display_name) document.getElementById('locationInput').value = d.display_name.split(',').slice(0,3).join(', ');
+      });
+  }, () => {
+    document.getElementById('locationStatus').textContent = '❌ Location access denied.';
+  });
+}
+</script>
+{% endblock %}

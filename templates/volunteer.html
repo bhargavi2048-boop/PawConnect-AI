@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block title %}Volunteer – PawConnect AI{% endblock %}
+
+{% block content %}
+<div class="page-header-banner banner-green">
+  <div class="container">
+    <h1 class="page-banner-title">🤝 Join as a Volunteer</h1>
+    <p class="page-banner-sub">Be the change. Register to feed, rescue, or medically assist stray dogs in your area.</p>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">Volunteer</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container py-5">
+  <!-- TABS -->
+  <ul class="nav nav-tabs-custom mb-4" id="volTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-tab-btn active" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">
+        📝 Register
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-tab-btn" id="volunteers-tab" data-bs-toggle="tab" data-bs-target="#volunteers-list" type="button">
+        👥 Volunteer Directory ({{ volunteers|length }})
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-tab-btn" id="roles-tab" data-bs-toggle="tab" data-bs-target="#roles" type="button">
+        🎯 Volunteer Roles
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="volTabContent">
+
+    <!-- REGISTER TAB -->
+    <div class="tab-pane fade show active" id="register" role="tabpanel">
+      <div class="row justify-content-center g-5">
+        <div class="col-lg-7">
+          <div class="form-card">
+            <div class="form-card-header">
+              <span class="form-card-icon">🤝</span>
+              <h4>Volunteer Registration</h4>
+              <p>Join our growing network of compassionate helpers</p>
+            </div>
+            <div class="form-card-body">
+              <form method="POST" action="/volunteer" novalidate>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-600">Full Name <span class="text-danger">*</span></label>
+                    <div class="input-group-custom">
+                      <span class="input-icon">👤</span>
+                      <input type="text" name="name" class="form-control custom-input" placeholder="Your name" required/>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-600">Mobile Number <span class="text-danger">*</span></label>
+                    <div class="input-group-custom">
+                      <span class="input-icon">📱</span>
+                      <input type="tel" name="mobile" class="form-control custom-input" placeholder="10-digit number" required/>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-600">Your Location <span class="text-danger">*</span></label>
+                    <div class="input-group-custom">
+                      <span class="input-icon">📍</span>
+                      <input type="text" name="location" class="form-control custom-input" placeholder="Your city or area" required/>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-600">Type of Help <span class="text-danger">*</span></label>
+                    <div class="help-type-cards">
+                      <label class="help-type-option">
+                        <input type="radio" name="help_type" value="Food Provider" class="d-none"/>
+                        <div class="help-type-card">
+                          <span class="ht-icon">🍽️</span>
+                          <strong>Food Provider</strong>
+                          <small>Feed stray dogs regularly</small>
+                        </div>
+                      </label>
+                      <label class="help-type-option">
+                        <input type="radio" name="help_type" value="Rescue Volunteer" class="d-none"/>
+                        <div class="help-type-card">
+                          <span class="ht-icon">🚑</span>
+                          <strong>Rescue Volunteer</strong>
+                          <small>Rescue injured/lost dogs</small>
+                        </div>
+                      </label>
+                      <label class="help-type-option">
+                        <input type="radio" name="help_type" value="Medical Assistance" class="d-none"/>
+                        <div class="help-type-card">
+                          <span class="ht-icon">💉</span>
+                          <strong>Medical Assistance</strong>
+                          <small>Vet care & medical help</small>
+                        </div>
+                      </label>
+                    </div>
+                    <input type="hidden" name="help_type" id="helpTypeHidden"/>
+                  </div>
+                  <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-submit-form w-100" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+                      <i class="fas fa-heart me-2"></i>Register as Volunteer
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="info-sidebar">
+            <div class="info-card mb-3">
+              <h6 class="info-card-title">💚 Why Volunteer?</h6>
+              <ul class="info-list">
+                <li>Make a direct impact on animal welfare</li>
+                <li>Connect with like-minded animal lovers</li>
+                <li>Be part of a sustainable community</li>
+                <li>Get recognized as SDG Champion</li>
+              </ul>
+            </div>
+            <div class="info-card mb-3">
+              <h6 class="info-card-title">📊 Community Impact</h6>
+              <div class="impact-stats">
+                <div class="impact-item">
+                  <span class="impact-num">{{ volunteers|length }}</span>
+                  <span class="impact-lbl">Active Volunteers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOLUNTEERS LIST TAB -->
+    <div class="tab-pane fade" id="volunteers-list" role="tabpanel">
+      <div class="table-card">
+        <h5 class="table-card-title">👥 Registered Volunteers</h5>
+        {% if volunteers %}
+        <div class="table-responsive">
+          <table class="table custom-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Location</th>
+                <th>Role</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in volunteers %}
+              <tr>
+                <td><span class="row-num">{{ loop.index }}</span></td>
+                <td><strong>{{ v.name }}</strong></td>
+                <td>{{ v.mobile[:4] }}******</td>
+                <td><i class="fas fa-map-marker-alt text-danger me-1"></i>{{ v.location }}</td>
+                <td>
+                  {% if v.help_type == 'Food Provider' %}<span class="badge-role badge-food">🍽️ {{ v.help_type }}</span>
+                  {% elif v.help_type == 'Rescue Volunteer' %}<span class="badge-role badge-rescue">🚑 {{ v.help_type }}</span>
+                  {% else %}<span class="badge-role badge-medical">💉 {{ v.help_type }}</span>{% endif %}
+                </td>
+                <td><small class="text-muted">{{ v.timestamp[:10] }}</small></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🐾</div>
+          <p>No volunteers yet. Be the first to join!</p>
+          <button class="btn btn-sm btn-outline-success" onclick="document.getElementById('register-tab').click()">Register Now</button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ROLES TAB -->
+    <div class="tab-pane fade" id="roles" role="tabpanel">
+      <div class="row g-4 mt-1">
+        <div class="col-md-4">
+          <div class="role-detail-card role-food">
+            <div class="role-icon-big">🍽️</div>
+            <h5>Food Provider</h5>
+            <p>Set up regular feeding stations, provide nutritious food, and maintain fresh water supplies for stray dogs in your area.</p>
+            <h6>Responsibilities:</h6>
+            <ul>
+              <li>Feed dogs at consistent times daily</li>
+              <li>Maintain clean feeding spots</li>
+              <li>Report new dogs in your area</li>
+              <li>Coordinate with other providers</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="role-detail-card role-rescue">
+            <div class="role-icon-big">🚑</div>
+            <h5>Rescue Volunteer</h5>
+            <p>Respond to emergency reports, safely transport injured or distressed dogs to shelters or veterinary care.</p>
+            <h6>Responsibilities:</h6>
+            <ul>
+              <li>Respond to SOS reports promptly</li>
+              <li>Handle dogs safely and humanely</li>
+              <li>Coordinate with vets and shelters</li>
+              <li>Update case status in dashboard</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="role-detail-card role-medical">
+            <div class="role-icon-big">💉</div>
+            <h5>Medical Assistance</h5>
+            <p>Provide veterinary care, vaccinations, wound treatment, and support ABC (Animal Birth Control) programs.</p>
+            <h6>Responsibilities:</h6>
+            <ul>
+              <li>Assess and treat sick/injured dogs</li>
+              <li>Support vaccination drives</li>
+              <li>Assist with ABC programs</li>
+              <li>Advise other volunteers on dog health</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Help type card selection
+document.querySelectorAll('.help-type-option').forEach(opt => {
+  opt.addEventListener('click', function() {
+    document.querySelectorAll('.help-type-card').forEach(c => c.classList.remove('selected'));
+    this.querySelector('.help-type-card').classList.add('selected');
+    document.getElementById('helpTypeHidden').value = this.querySelector('input').value;
+    this.querySelector('input').checked = true;
+  });
+});
+
+// Fix form submission: ensure hidden input has value
+document.querySelector('form').addEventListener('submit', function(e) {
+  const sel = document.querySelector('.help-type-card.selected');
+  if (!sel) {
+    e.preventDefault();
+    alert('Please select a type of help.');
+    return;
+  }
+});
+</script>
+{% endblock %}

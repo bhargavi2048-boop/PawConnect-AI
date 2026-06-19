@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Contact Us – PawConnect AI{% endblock %}
+
+{% block content %}
+<div class="page-header-banner banner-teal">
+  <div class="container">
+    <h1 class="page-banner-title">📧 Contact Us</h1>
+    <p class="page-banner-sub">Have questions, feedback, or want to partner with us? We'd love to hear from you.</p>
+  </div>
+</div>
+
+<div class="container py-5">
+
+  <!-- DEVELOPER CONTACT SECTION -->
+  <div class="section-header text-center mb-5">
+    <span class="section-eyebrow">Project Developer</span>
+    <h2 class="section-title">Get in Touch with Bhargavi N</h2>
+    <p class="section-desc text-dark">The creator and developer of PawConnect AI, passionate about tech-driven social impact.</p>
+  </div>
+
+  <div class="row g-4 justify-content-center mb-5">
+    <div class="col-md-6 col-lg-3">
+      <a href="mailto:bhargavi2048@gmail.com" class="contact-dev-card text-decoration-none d-block">
+        <div class="contact-dev-icon" style="background:#fff3e0;color:#e65100;">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h6 class="contact-dev-title text-dark">Email</h6>
+        <p class="contact-dev-val text-secondary">bhargavi2048@gmail.com</p>
+        <span class="contact-dev-cta">Send Email →</span>
+      </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <a href="https://www.linkedin.com/in/bhargavi-nagaraj-967811381" target="_blank" rel="noopener" class="contact-dev-card text-decoration-none d-block">
+        <div class="contact-dev-icon" style="background:#e3f2fd;color:#0a66c2;">
+          <i class="fab fa-linkedin"></i>
+        </div>
+        <h6 class="contact-dev-title text-dark">LinkedIn</h6>
+        <p class="contact-dev-val text-secondary">Bhargavi Nagaraj</p>
+        <span class="contact-dev-cta">View Profile →</span>
+      </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <a href="https://github.com/bhargavi2048-boop" target="_blank" rel="noopener" class="contact-dev-card text-decoration-none d-block">
+        <div class="contact-dev-icon" style="background:#f3e5f5;color:#1a1a2e;">
+          <i class="fab fa-github"></i>
+        </div>
+        <h6 class="contact-dev-title text-dark">GitHub</h6>
+        <p class="contact-dev-val text-secondary">bhargavi2048-boop</p>
+        <span class="contact-dev-cta">View Projects →</span>
+      </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="contact-dev-card" style="cursor:default;">
+        <div class="contact-dev-icon" style="background:#e8f5e9;color:#2e7d32;">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <h6 class="contact-dev-title text-dark">Location</h6>
+        <p class="contact-dev-val text-secondary">Tamil Nadu, India</p>
+        <span class="contact-dev-cta" style="color:#aaa;">Based in India</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5" style="border-color:#e0e0e0;"/>
+
+  <div class="row g-5">
+    <!-- CONTACT FORM -->
+    <div class="col-lg-7">
+      <div class="contact-form-card">
+        <h4 class="fw-800 mb-1 text-dark">Send a Message</h4>
+        <p class="text-secondary mb-4">For partnerships, volunteer inquiries, or feedback about PawConnect AI.</p>
+        <form method="POST" action="/contact">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="form-label fw-600 text-dark">Your Name *</label>
+              <input type="text" name="name" class="form-control form-control-lg" placeholder="Your full name" required/>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-600 text-dark">Email Address *</label>
+              <input type="email" name="email" class="form-control form-control-lg" placeholder="you@example.com" required/>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600 text-dark">Subject *</label>
+              <select name="subject" class="form-select form-select-lg">
+                <option>General Inquiry</option>
+                <option>Partnership / NGO Collaboration</option>
+                <option>Volunteer Registration Help</option>
+                <option>Technical Support</option>
+                <option>Feedback &amp; Suggestions</option>
+                <option>Media / Press</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600 text-dark">Message *</label>
+              <textarea name="message" class="form-control" rows="5" placeholder="Write your message here..." required></textarea>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-hero-primary w-100">
+                <i class="fas fa-paper-plane me-2"></i>Send Message
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- FEEDBACK -->
+        <div class="feedback-section mt-5">
+          <h5 class="fw-700 mb-3 text-dark">⭐ Rate Our Platform</h5>
+          <p class="text-secondary mb-3">How would you rate your experience with PawConnect AI?</p>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-warning btn-sm feedback-btn" onclick="selectRating(this,5)">⭐⭐⭐⭐⭐ Excellent</button>
+            <button class="btn btn-outline-success btn-sm feedback-btn" onclick="selectRating(this,4)">⭐⭐⭐⭐ Good</button>
+            <button class="btn btn-outline-primary btn-sm feedback-btn" onclick="selectRating(this,3)">⭐⭐⭐ Average</button>
+            <button class="btn btn-outline-secondary btn-sm feedback-btn" onclick="selectRating(this,2)">⭐⭐ Poor</button>
+          </div>
+          <div id="feedbackThanks" class="mt-3 text-success fw-600" style="display:none;">
+            ✅ Thank you for your feedback! It helps us improve.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE INFO -->
+    <div class="col-lg-5">
+      <div class="contact-info-card mb-4">
+        <h5 class="fw-700 mb-4 text-dark">Additional Contacts</h5>
+        <div class="contact-info-item">
+          <div class="contact-info-icon" style="background:#e8f5e9;color:#388e3c;"><i class="fas fa-phone"></i></div>
+          <div>
+            <div class="contact-info-label">Animal Emergency Helpline</div>
+            <div class="contact-info-val">1962 (Toll Free)</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon" style="background:#fff3e0;color:#f57c00;"><i class="fas fa-heart"></i></div>
+          <div>
+            <div class="contact-info-label">Blue Cross India</div>
+            <div class="contact-info-val">044-22350170</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon" style="background:#f3e5f5;color:#7b1fa2;"><i class="fas fa-clock"></i></div>
+          <div>
+            <div class="contact-info-label">Response Time</div>
+            <div class="contact-info-val">Within 24 hours</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-info-card">
+        <h5 class="fw-700 mb-4 text-dark">About This Project</h5>
+        <div class="p-3 rounded-3 mb-3" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+          <h6 class="fw-700 text-success mb-2">🏆 1M1B Initiative</h6>
+          <p class="small text-secondary mb-0">PawConnect AI is submitted as part of the 1 Million for 1 Billion initiative, aimed at creating measurable SDG-aligned impact through technology.</p>
+        </div>
+        <div class="p-3 rounded-3" style="background:#fff8e1;border:1px solid #ffe082;">
+          <h6 class="fw-700 mb-2 text-dark">🤝 Partner With Us</h6>
+          <p class="small text-secondary mb-2">Are you an animal welfare NGO or organization looking to collaborate?</p>
+          <a href="mailto:bhargavi2048@gmail.com" class="btn btn-warning btn-sm text-dark fw-600">Partner With Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectRating(btn, rating) {
+  document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('feedbackThanks').style.display = 'block';
+}
+</script>
+{% endblock %}

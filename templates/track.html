@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Track Complaint – PawConnect AI{% endblock %}
+
+{% block content %}
+<div class="page-header-banner banner-teal">
+  <div class="container">
+    <h1 class="page-banner-title">🔍 Track Your Complaint</h1>
+    <p class="page-banner-sub">Enter your Complaint ID to check real-time status updates.</p>
+  </div>
+</div>
+
+<div class="container py-5" style="max-width:700px;">
+  <div class="track-card">
+    <h5 class="mb-3 fw-700">Enter Complaint ID</h5>
+    <form method="GET" action="/track" class="d-flex gap-2">
+      <input type="text" name="id" value="{{ query }}" class="form-control form-control-lg" placeholder="e.g. PC001" required/>
+      <button class="btn btn-hero-primary px-4" type="submit">Search</button>
+    </form>
+  </div>
+
+  {% if searched %}
+    {% if complaint %}
+    <div class="track-result mt-4 animate-in">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+        <div>
+          <h4 class="fw-800 mb-1">{{ complaint.get('complaint_no', complaint.id) }}</h4>
+          <p class="text-muted mb-0">{{ complaint.complaint_type }} · {{ complaint.location }}</p>
+        </div>
+        <div>
+          {% if complaint.status == 'Submitted' %}<span class="status-badge-lg status-submitted">📩 Submitted</span>
+          {% elif complaint.status == 'In Progress' %}<span class="status-badge-lg status-inprogress">🔵 In Progress</span>
+          {% elif complaint.status == 'Rescued' %}<span class="status-badge-lg status-rescued">🐾 Rescued</span>
+          {% elif complaint.status == 'Closed' %}<span class="status-badge-lg status-closed">✅ Closed</span>
+          {% else %}<span class="status-badge-lg status-submitted">{{ complaint.status }}</span>{% endif %}
+        </div>
+      </div>
+
+      <!-- STATUS TIMELINE -->
+      <div class="timeline mb-4">
+        {% set stages = ['Submitted', 'In Progress', 'Rescued', 'Closed'] %}
+        {% set stage_icons = ['📩', '🔵', '🐾', '✅'] %}
+        {% set current_idx = 0 %}
+        {% if complaint.status == 'In Progress' %}{% set current_idx = 1 %}{% endif %}
+        {% if complaint.status == 'Rescued' %}{% set current_idx = 2 %}{% endif %}
+        {% if complaint.status == 'Closed' %}{% set current_idx = 3 %}{% endif %}
+        {% for stage in stages %}{% set i = loop.index0 %}
+        <div class="timeline-step {% if i <= current_idx %}active{% endif %} {% if i == current_idx %}current{% endif %}">
+          <div class="timeline-icon">{% if i == 0 %}📩{% elif i == 1 %}🔵{% elif i == 2 %}🐾{% else %}✅{% endif %}</div>
+          <div class="timeline-label">{{ stage }}</div>
+          {% if i < stages|length - 1 %}<div class="timeline-line {% if i < current_idx %}filled{% endif %}"></div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <div class="track-info-box">
+            <div class="track-info-label">Reporter Name</div>
+            <div class="track-info-val">{{ complaint.name }}</div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="track-info-box">
+            <div class="track-info-label">Complaint Type</div>
+            <div class="track-info-val">{{ complaint.complaint_type }}</div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="track-info-box">
+            <div class="track-info-label">Location</div>
+            <div class="track-info-val">{{ complaint.location }}</div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="track-info-box">
+            <div class="track-info-label">Date Reported</div>
+            <div class="track-info-val">{{ complaint.timestamp[:10] }}</div>
+          </div>
+        </div>
+        {% if complaint.description %}
+        <div class="col-12">
+          <div class="track-info-box">
+            <div class="track-info-label">Description</div>
+            <div class="track-info-val">{{ complaint.description }}</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="text-center mt-4 p-5">
+      <div style="font-size:3rem">🔍</div>
+      <h5 class="mt-3">Complaint Not Found</h5>
+      <p class="text-muted">No complaint found with ID <strong>"{{ query }}"</strong>. Please check the ID and try again.</p>
+      <a href="/report" class="btn btn-hero-primary mt-2">Submit a New Report</a>
+    </div>
+    {% endif %}
+  {% else %}
+  <div class="text-center mt-4 p-4 text-muted">
+    <div style="font-size:3rem">🐾</div>
+    <p class="mt-3">Your Complaint ID is shown after submitting a report (e.g. <strong>PC001</strong>).</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

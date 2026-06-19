@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}PawConnect AI{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <span class="brand-paw">🐾</span>
+      <span class="brand-text">PawConnect <span class="brand-ai">AI</span></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='home' %}active{% endif %}" href="/">🏠 Home</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='report' %}active{% endif %}" href="/report">🚨 Report</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='track' %}active{% endif %}" href="/track">🔍 Track</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='volunteer' %}active{% endif %}" href="/volunteer">🤝 Volunteer</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='chatbot' %}active{% endif %}" href="/chatbot">🤖 AI Chat</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='about' %}active{% endif %}" href="/about">ℹ️ About</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint=='contact' %}active{% endif %}" href="/contact">📧 Contact</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="btn btn-admin-nav" href="/admin"><i class="fas fa-shield-alt me-1"></i>Admin</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
+          {{ msg|safe }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<!-- PROFESSIONAL FOOTER -->
+<footer class="site-footer mt-5">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Brand -->
+      <div class="col-md-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span style="font-size:1.8rem">🐾</span>
+          <h5 class="mb-0 fw-800">PawConnect AI</h5>
+        </div>
+        <p class="footer-desc">A sustainability platform connecting citizens, NGOs, and volunteers to protect stray dogs and build compassionate communities.</p>
+        <div class="footer-developer mt-3">
+          <p class="footer-dev-label mb-1"><i class="fas fa-code me-2"></i><strong>Developed by Bhargavi N</strong></p>
+          <p class="footer-dev-link mb-1">
+            <i class="fas fa-envelope me-2"></i>
+            <a href="mailto:bhargavi2048@gmail.com" class="footer-dev-a">bhargavi2048@gmail.com</a>
+          </p>
+          <p class="footer-dev-link mb-1">
+            <i class="fab fa-linkedin me-2"></i>
+            <a href="https://www.linkedin.com/in/bhargavi-nagaraj-967811381" target="_blank" rel="noopener" class="footer-dev-a">LinkedIn Profile</a>
+          </p>
+          <p class="footer-dev-link mb-0">
+            <i class="fab fa-github me-2"></i>
+            <a href="https://github.com/bhargavi2048-boop" target="_blank" rel="noopener" class="footer-dev-a">GitHub Profile</a>
+          </p>
+        </div>
+      </div>
+      <!-- Quick Links -->
+      <div class="col-md-2">
+        <h6 class="footer-heading">Quick Links</h6>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/report">Report Dog</a></li>
+          <li><a href="/track">Track Complaint</a></li>
+          <li><a href="/volunteer">Volunteer</a></li>
+          <li><a href="/chatbot">AI Chatbot</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <!-- SDG -->
+      <div class="col-md-3">
+        <h6 class="footer-heading">SDG Alignment</h6>
+        <div class="sdg-badges">
+          <span class="sdg-badge sdg-15">🌿 SDG 15<br><small>Life on Land</small></span>
+          <span class="sdg-badge sdg-11">🏙️ SDG 11<br><small>Sustainable Cities</small></span>
+          <span class="sdg-badge sdg-17">🤝 SDG 17<br><small>Partnerships</small></span>
+        </div>
+      </div>
+      <!-- Emergency -->
+      <div class="col-md-3">
+        <h6 class="footer-heading">Emergency Contacts</h6>
+        <p class="footer-contact"><i class="fas fa-phone me-2"></i>Animal Helpline: <strong>1962</strong></p>
+        <p class="footer-contact"><i class="fas fa-globe me-2"></i>awbi.gov.in</p>
+        <p class="footer-contact"><i class="fas fa-heart me-2"></i>Blue Cross India: 044-22350170</p>
+        <p class="footer-contact"><i class="fas fa-envelope me-2"></i>bhargavi2048@gmail.com</p>
+      </div>
+    </div>
+    <hr class="footer-hr"/>
+    <div class="text-center footer-bottom">
+      <p>© 2026 PawConnect AI &nbsp;|&nbsp; Developed by <strong>Bhargavi N</strong> &nbsp;|&nbsp; Built for SDG Impact &nbsp;|&nbsp; 1M1B Initiative</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

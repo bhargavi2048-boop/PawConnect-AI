@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}AI Chatbot – PawConnect AI{% endblock %}
+
+{% block content %}
+<div class="page-header-banner banner-purple">
+  <div class="container">
+    <h1 class="page-banner-title">🤖 Chat with PawBot</h1>
+    <p class="page-banner-sub">Your AI-powered animal welfare assistant — available 24/7 for guidance and support.</p>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">AI Chatbot</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center g-4">
+    <div class="col-lg-8">
+      <div class="chatbot-container">
+        <!-- Chat header -->
+        <div class="chat-header">
+          <div class="chat-avatar">🐾</div>
+          <div class="chat-info">
+            <h5>PawBot</h5>
+            <span class="chat-status"><span class="status-dot"></span> Online — Always Here to Help</span>
+          </div>
+        </div>
+
+        <!-- Chat messages area -->
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg bot-msg">
+            <div class="msg-avatar">🐾</div>
+            <div class="msg-bubble">
+              <p>🐕 Hi there! I'm <strong>PawBot</strong>, your PawConnect AI assistant!</p>
+              <p>I can help you with:</p>
+              <ul>
+                <li>🍖 What to feed stray dogs</li>
+                <li>🚨 What to do for injured/sick dogs</li>
+                <li>📞 Animal welfare contacts</li>
+                <li>💪 How to volunteer & help</li>
+                <li>📝 How to file a report</li>
+              </ul>
+              <p>What would you like to know? 😊</p>
+              <small class="msg-time">Just now</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick questions -->
+        <div class="quick-questions" id="quickQuestions">
+          <p class="quick-title">Quick Questions:</p>
+          <div class="quick-btns">
+            <button class="quick-btn" onclick="sendQuick('What food can I give stray dogs?')">🍖 What to feed strays?</button>
+            <button class="quick-btn" onclick="sendQuick('What should I do if a dog is injured?')">🚨 Dog is injured</button>
+            <button class="quick-btn" onclick="sendQuick('How can I contact animal welfare organizations?')">📞 Welfare contacts</button>
+            <button class="quick-btn" onclick="sendQuick('How can I help stray dogs?')">💪 How to help?</button>
+            <button class="quick-btn" onclick="sendQuick('How do I report a stray dog?')">📝 File a report</button>
+            <button class="quick-btn" onclick="sendQuick('My dog looks sick, what should I do?')">🏥 Sick dog</button>
+          </div>
+        </div>
+
+        <!-- Chat input -->
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type your question here..." autocomplete="off"/>
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="chat-disclaimer">
+        <i class="fas fa-shield-alt me-2"></i>
+        <span>PawBot provides general guidance only. It does not give medical diagnoses. Always consult a licensed veterinarian for health concerns. Your conversations are private and not stored.</span>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div class="info-sidebar">
+        <div class="info-card mb-3">
+          <h6 class="info-card-title">🤖 About PawBot</h6>
+          <p style="font-size:0.9rem">PawBot is trained on animal welfare best practices to provide fast, friendly guidance. It's designed to help citizens take the right first steps.</p>
+        </div>
+        <div class="info-card info-card-emergency mb-3">
+          <h6 class="info-card-title">🚨 Emergency Action</h6>
+          <p><strong>Dog in immediate danger?</strong></p>
+          <a href="/report" class="btn btn-danger w-100 mb-2">🚨 Report Now</a>
+          <p class="mb-0"><strong>Helpline:</strong> 1962</p>
+        </div>
+        <div class="info-card mb-3">
+          <h6 class="info-card-title">💡 Responsible AI</h6>
+          <ul class="info-list">
+            <li>Does not diagnose diseases</li>
+            <li>Protects user privacy</li>
+            <li>Encourages human verification</li>
+            <li>Transparent recommendations</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h6 class="info-card-title">⭐ Recent Topics</h6>
+          <div class="topic-tags">
+            <span class="topic-tag">Feeding guide</span>
+            <span class="topic-tag">First aid</span>
+            <span class="topic-tag">ABC program</span>
+            <span class="topic-tag">NGO contacts</span>
+            <span class="topic-tag">Rescue tips</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+
+function getTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function appendMessage(text, sender) {
+  const div = document.createElement('div');
+  div.className = `chat-msg ${sender === 'user' ? 'user-msg' : 'bot-msg'}`;
+
+  if (sender === 'bot') {
+    div.innerHTML = `
+      <div class="msg-avatar">🐾</div>
+      <div class="msg-bubble">${text}<small class="msg-time">${getTime()}</small></div>`;
+  } else {
+    div.innerHTML = `
+      <div class="msg-bubble user-bubble">${text}<small class="msg-time">${getTime()}</small></div>
+      <div class="msg-avatar user-avatar">👤</div>`;
+  }
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot-msg typing-indicator-msg';
+  div.id = 'typingIndicator';
+  div.innerHTML = `<div class="msg-avatar">🐾</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typingIndicator');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+  chatInput.value = '';
+  document.getElementById('quickQuestions').style.display = 'none';
+  appendMessage(msg, 'user');
+  showTyping();
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message: msg })
+    });
+    const data = await res.json();
+    removeTyping();
+    appendMessage(data.response, 'bot');
+  } catch(e) {
+    removeTyping();
+    appendMessage('⚠️ Sorry, I had trouble connecting. Please try again.', 'bot');
+  }
+  document.getElementById('sendBtn').disabled = false;
+  chatInput.focus();
+}
+
+function sendQuick(text) {
+  chatInput.value = text;
+  sendMessage();
+}
+
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+</script>
+{% endblock %}
